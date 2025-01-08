@@ -127,6 +127,7 @@ export class SaveManager {
     }
 
     private async handleBackup(file: File) {
+        if (!this.backups.files) return;
         for (const backup of this.backups.files) {
             if (backup.name === file.name) return;
             const oldData = await backup.text();
@@ -144,7 +145,9 @@ export class SaveManager {
     async export() {
         if (!this.save) throw new Error("No save file provided");
         const xmlManager = await getXmlManager();
-        return await xmlManager.stringify(this.save.raw);
+        return await xmlManager.stringify(
+            JSON.parse(JSON.stringify(this.save.raw)),
+        );
     }
 
     reset() {
